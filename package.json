@@ -8,7 +8,8 @@
     "index.js",
     "src/",
     "test/",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "test": "node test/test.js"
@@ -39,6 +40,7 @@
     "boxen": "^7.0.0",
     "stacktrace-js": "^2.0.0"
   },
+  
   "devDependencies": {
     "axios": "^1.0.0",
     "jsonwebtoken": "^9.0.0"
