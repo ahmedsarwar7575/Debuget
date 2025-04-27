@@ -1,6 +1,6 @@
 {
   "name": "debuget",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A pocket-sized debugging dino that pecks away at every error and shows you exactly what went wrong and where—no more hunting through messy stack traces.",
   "type": "module",
   "main": "index.js",
