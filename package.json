@@ -1,0 +1,46 @@
+{
+  "name": "debuget",
+  "version": "1.0.0",
+  "description": "A pocket-sized debugging dino that pecks away at every error and shows you exactly what went wrong and where—no more hunting through messy stack traces.",
+  "type": "module",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "src/",
+    "test/",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmedsarwar7575/Debuget.git"
+  },
+  "keywords": [
+    "debuget",
+    "error-logger",
+    "debugging",
+    "logging",
+    "stacktrace",
+    "nodejs",
+    "developer-tools",
+    "chalk",
+    "boxen"
+  ],
+  "author": "Ahmed Sarwar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ahmedsarwar7575/Debuget/issues"
+  },
+  "homepage": "https://github.com/ahmedsarwar7575/Debuget#readme",
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "boxen": "^7.0.0",
+    "stacktrace-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "axios": "^1.0.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}
