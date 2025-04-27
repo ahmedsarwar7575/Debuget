@@ -1,6 +1,4 @@
 import fs from 'fs';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
 import {log, setConfig} from 'debuget';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
