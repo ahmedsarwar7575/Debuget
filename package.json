@@ -40,9 +40,5 @@
     "chalk": "^5.0.0",
     "debuget": "^1.0.0",
     "stacktrace-js": "^2.0.0"
-  },
-  "devDependencies": {
-    "axios": "^1.0.0",
-    "jsonwebtoken": "^9.0.0"
   }
 }
