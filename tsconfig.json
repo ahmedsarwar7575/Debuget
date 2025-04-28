@@ -1,18 +1,23 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "rootDir": "./src",  // Make sure the root directory is set correctly
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "types": ["node"]  // Include node types here
+    "target": "ES6",  // ECMAScript 6 for compatibility with modern JS features
+    "module": "ESNext",  // Ensure that the code is compiled as ES Modules
+    "moduleResolution": "node",  // Resolve modules the Node.js way
+    "outDir": "./dist",  // Output directory for compiled files
+    "rootDir": "./src",  // Source directory for TypeScript files
+    "esModuleInterop": true,  // Ensure compatibility with CommonJS modules
+    "skipLibCheck": true,  // Skip type checking of declaration files
+    "strict": true,  // Enable strict type checking
+    "resolveJsonModule": true,  // Allow importing JSON modules
+    "types": ["node"],  // Include Node.js types for proper resolution
+    "declaration": true,  // Generate corresponding .d.ts files
+    "declarationDir": "./dist/types",  // Output .d.ts files to a specific folder
+    "sourceMap": true,  // Generate source maps for easier debugging
   },
   "include": [
-    "src/**/*",  // Make sure TypeScript looks in the src folder
-    "*.ts"       // This will also include any .ts files in the root if present
+    "src/**/*"  // Include all .ts files inside the src folder
   ],
   "exclude": [
-    "node_modules"
+    "node_modules"  // Exclude node_modules from compilation
   ]
 }

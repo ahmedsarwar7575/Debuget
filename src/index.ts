@@ -131,7 +131,7 @@ async function formatError(err: any): Promise<string> {
   try {
     const { name, message, code, status, statusCode, stack } = err;
     const category      = determineCategory(err);
-    const rawHeader     = EMOJI[category] || EMOJI.default;
+    const rawHeader = EMOJI[category as keyof typeof EMOJI] || EMOJI.default;
     const headerText    = applyEmoji(rawHeader);
     const header        = applyColor(COLORS.critical, headerText);
     const explanationTxt= getNaturalLanguageExplanation(err);
@@ -187,17 +187,14 @@ export const log = async (err: any): Promise<void> => {
   console.error('\n' + formatted + '\n');
 };
 
-// ==== CONFIGURATION API ====
-export function setConfig(newTheme: any): void {
+export const setConfig = (newTheme: any): void => {
   Object.assign(config.theme, newTheme);
-}
+};
 
-// ==== EXPRESS MIDDLEWARE ====
 export const expressMiddleware = () => async (err: any, req: any, res: any, next: any) => {
   await log(err);
   res.status(err.statusCode || 500).json({ error: err.message });
 };
-
 // ==== PROCESS-LEVEL HANDLERS ====
 process.on('uncaughtException', async error => {
   await log(error);

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-"use strict";
 // enhancedErrorLogger.ts
 // Enhanced Error Logger for Node.js with respect for theme settings (emoji/colors).
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -11,30 +10,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.expressMiddleware = exports.log = void 0;
-exports.setConfig = setConfig;
-const stacktrace_js_1 = __importDefault(require("stacktrace-js"));
-const chalk_1 = __importDefault(require("chalk"));
-const boxen_1 = __importDefault(require("boxen"));
+import StackTrace from 'stacktrace-js';
+import chalk from 'chalk';
+import boxen from 'boxen';
 // ==== COLOR CONFIGURATION ====
 const COLORS = {
-    critical: chalk_1.default.hex('#FF6B6B').bold,
-    warning: chalk_1.default.hex('#FFD93D'),
-    info: chalk_1.default.hex('#6CBEED'),
-    code: chalk_1.default.hex('#A9E34B').italic,
-    path: chalk_1.default.hex('#748FFC').underline,
-    validation: chalk_1.default.hex('#FF8C00'),
-    jwt: chalk_1.default.hex('#8A2BE2'),
-    abort: chalk_1.default.yellowBright,
-    aggregate: chalk_1.default.magenta,
-    http: chalk_1.default.cyan,
-    dns: chalk_1.default.blueBright,
-    tls: chalk_1.default.redBright,
-    stream: chalk_1.default.greenBright,
+    critical: chalk.hex('#FF6B6B').bold,
+    warning: chalk.hex('#FFD93D'),
+    info: chalk.hex('#6CBEED'),
+    code: chalk.hex('#A9E34B').italic,
+    path: chalk.hex('#748FFC').underline,
+    validation: chalk.hex('#FF8C00'),
+    jwt: chalk.hex('#8A2BE2'),
+    abort: chalk.yellowBright,
+    aggregate: chalk.magenta,
+    http: chalk.cyan,
+    dns: chalk.blueBright,
+    tls: chalk.redBright,
+    stream: chalk.greenBright,
 };
 // ==== EMOJI / HEADER CONFIGURATION ====
 const EMOJI = {
@@ -68,7 +61,7 @@ function applyColor(fn, text) {
     return config.theme.colors ? fn(text) : text;
 }
 function applyLabel(text) {
-    return config.theme.colors ? chalk_1.default.bold(text) : text;
+    return config.theme.colors ? chalk.bold(text) : text;
 }
 function applyEmoji(header) {
     if (!config.theme.emoji) {
@@ -163,16 +156,16 @@ function formatError(err) {
             const explanationTxt = getNaturalLanguageExplanation(err);
             const explanation = applyColor(COLORS.info, explanationTxt);
             const timestampIso = new Date().toISOString();
-            const timestamp = applyColor(chalk_1.default.dim, timestampIso);
+            const timestamp = applyColor(chalk.dim, timestampIso);
             // Meta info
             const meta = [
                 timestamp,
                 ...(statusCode || status ? [`${applyLabel('Status:')} ${statusCode || status}`] : []),
-                `${config.theme.colors ? chalk_1.default.red('Error:') : 'Error:'} ${name}: ${message}`,
+                `${config.theme.colors ? chalk.red('Error:') : 'Error:'} ${name}: ${message}`,
                 ...(code ? [`${applyLabel('Code:')} ${code}`] : []),
             ];
             // Stack journey
-            const frames = yield stacktrace_js_1.default.fromError(err);
+            const frames = yield StackTrace.fromError(err);
             const stackJourney = frames
                 .filter(f => { var _a; return !((_a = f.fileName) === null || _a === void 0 ? void 0 : _a.includes('node_modules')); })
                 .slice(0, config.theme.stackDepth)
@@ -180,7 +173,7 @@ function formatError(err) {
                 const fn = frame.functionName || '<anonymous>';
                 const fnStyled = applyColor(COLORS.code, fn);
                 const pathStyled = applyColor(COLORS.path, `${frame.fileName}:${frame.lineNumber}`);
-                return `${applyColor(chalk_1.default.dim, '➜')} ${fnStyled}\n   ${pathStyled}`;
+                return `${applyColor(chalk.dim, '➜')} ${fnStyled}\n   ${pathStyled}`;
             })
                 .join('\n\n');
             // Compose box
@@ -191,7 +184,7 @@ function formatError(err) {
                 `${applyLabel('Where it broke:')}  ${applyColor(COLORS.code, ((_a = stack.split('\n')[1]) === null || _a === void 0 ? void 0 : _a.trim()) || 'Unknown location')}`,
                 `${applyLabel('Call journey:')}\n${stackJourney}`,
             ].join('\n\n');
-            return (0, boxen_1.default)(content, {
+            return boxen(content, {
                 padding: 1,
                 borderColor: config.theme.colors ? '#FF6B6B' : 'grey',
                 borderStyle: 'round',
@@ -205,28 +198,25 @@ function formatError(err) {
     });
 }
 // ==== PUBLIC LOGGER ====
-const log = (err) => __awaiter(void 0, void 0, void 0, function* () {
+export const log = (err) => __awaiter(void 0, void 0, void 0, function* () {
     const formatted = yield formatError(err);
     console.error('\n' + formatted + '\n');
 });
-exports.log = log;
-// ==== CONFIGURATION API ====
-function setConfig(newTheme) {
+export const setConfig = (newTheme) => {
     Object.assign(config.theme, newTheme);
-}
-// ==== EXPRESS MIDDLEWARE ====
-const expressMiddleware = () => (err, req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, exports.log)(err);
+};
+export const expressMiddleware = () => (err, req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    yield log(err);
     res.status(err.statusCode || 500).json({ error: err.message });
 });
-exports.expressMiddleware = expressMiddleware;
 // ==== PROCESS-LEVEL HANDLERS ====
 process.on('uncaughtException', (error) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, exports.log)(error);
+    yield log(error);
     process.exit(1);
 }));
 process.on('unhandledRejection', (reason) => __awaiter(void 0, void 0, void 0, function* () {
     const error = reason instanceof Error ? reason : new Error(String(reason));
-    yield (0, exports.log)(error);
+    yield log(error);
     process.exit(1);
 }));
+//# sourceMappingURL=index.js.map
