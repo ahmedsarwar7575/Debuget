@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// enhancedErrorLogger.js
+// enhancedErrorLogger.ts
 // Enhanced Error Logger for Node.js with respect for theme settings (emoji/colors).
 
 import StackTrace from 'stacktrace-js';
@@ -53,13 +53,15 @@ const config = {
 };
 
 // ==== HELPERS TO RESPECT THEME SETTINGS ====
-function applyColor(fn, text) {
+function applyColor(fn: Function, text: string): string {
   return config.theme.colors ? fn(text) : text;
 }
-function applyLabel(text) {
+
+function applyLabel(text: string): string {
   return config.theme.colors ? chalk.bold(text) : text;
 }
-function applyEmoji(header) {
+
+function applyEmoji(header: string): string {
   if (!config.theme.emoji) {
     const idx = header.indexOf(' ');
     return idx >= 0 ? header.slice(idx + 1) : header;
@@ -68,7 +70,7 @@ function applyEmoji(header) {
 }
 
 // ==== CATEGORY DETECTION ====
-function determineCategory(err) {
+function determineCategory(err: any): string {
   if (err.name === 'SyntaxError') return 'syntax';
   if (err.name === 'TypeError' || err.name === 'ReferenceError') return 'code';
   if (err.name === 'ValidationError') return 'validation';
@@ -89,8 +91,8 @@ function determineCategory(err) {
 }
 
 // ==== NATURAL-LANGUAGE EXPLANATIONS ====
-function getNaturalLanguageExplanation(err) {
-  const messages = {
+function getNaturalLanguageExplanation(err: any): string {
+  const messages: Record<string, string> = {
     ECONNREFUSED:    `Couldn't reach the database. Is it running?`,
     ENOENT:          `Tried to access a file that doesn't exist. Check the path.`,
     ENOTFOUND:       `Network connection failed. Check your internet connection.`,
@@ -116,6 +118,7 @@ function getNaturalLanguageExplanation(err) {
     500: `Internal server error. Something went wrong on the server.`,
     default: `An unexpected error occurred while running the application.`,
   };
+
   if (err.code && messages[err.code]) return messages[err.code];
   const status = err.status || err.statusCode;
   if (status && messages[status]) return messages[status];
@@ -124,7 +127,7 @@ function getNaturalLanguageExplanation(err) {
 }
 
 // ==== ERROR FORMATTING ====
-async function formatError(err) {
+async function formatError(err: any): Promise<string> {
   try {
     const { name, message, code, status, statusCode, stack } = err;
     const category      = determineCategory(err);
@@ -139,8 +142,8 @@ async function formatError(err) {
     // Meta info
     const meta = [
       timestamp,
-      ...(statusCode||status ? [`${applyLabel('Status:')} ${statusCode||status}`] : []),
-      `${config.theme.colors?chalk.red('Error:'):'Error:'} ${name}: ${message}`,
+      ...(statusCode || status ? [`${applyLabel('Status:')} ${statusCode || status}`] : []),
+      `${config.theme.colors ? chalk.red('Error:') : 'Error:'} ${name}: ${message}`,
       ...(code ? [`${applyLabel('Code:')} ${code}`] : []),
     ];
 
@@ -150,10 +153,10 @@ async function formatError(err) {
       .filter(f => !f.fileName?.includes('node_modules'))
       .slice(0, config.theme.stackDepth)
       .map(frame => {
-        const fn       = frame.functionName||'<anonymous>';
+        const fn       = frame.functionName || '<anonymous>';
         const fnStyled = applyColor(COLORS.code, fn);
-        const pathStyled=applyColor(COLORS.path,`${frame.fileName}:${frame.lineNumber}`);
-        return `${applyColor(chalk.dim,'➜')} ${fnStyled}\n   ${pathStyled}`;
+        const pathStyled = applyColor(COLORS.path, `${frame.fileName}:${frame.lineNumber}`);
+        return `${applyColor(chalk.dim, '➜')} ${fnStyled}\n   ${pathStyled}`;
       })
       .join('\n\n');
 
@@ -162,7 +165,7 @@ async function formatError(err) {
       header,
       meta.join('\n'),
       `${applyLabel('What happened?')}  ${explanation}`,
-      `${applyLabel('Where it broke:')}  ${applyColor(COLORS.code,stack.split('\n')[1]?.trim()||'Unknown location')}`,
+      `${applyLabel('Where it broke:')}  ${applyColor(COLORS.code, stack.split('\n')[1]?.trim() || 'Unknown location')}`,
       `${applyLabel('Call journey:')}\n${stackJourney}`,
     ].join('\n\n');
 
@@ -179,18 +182,18 @@ async function formatError(err) {
 }
 
 // ==== PUBLIC LOGGER ====
-export const log = async err => {
+export const log = async (err: any): Promise<void> => {
   const formatted = await formatError(err);
   console.error('\n' + formatted + '\n');
 };
 
 // ==== CONFIGURATION API ====
-export function setConfig(newTheme) {
+export function setConfig(newTheme: any): void {
   Object.assign(config.theme, newTheme);
 }
 
 // ==== EXPRESS MIDDLEWARE ====
-export const expressMiddleware = () => async (err, req, res, next) => {
+export const expressMiddleware = () => async (err: any, req: any, res: any, next: any) => {
   await log(err);
   res.status(err.statusCode || 500).json({ error: err.message });
 };

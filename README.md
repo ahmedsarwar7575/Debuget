@@ -122,7 +122,6 @@ setConfig({ colors: false, emoji: false, stackDepth: 10 });
 
 ## 🖼️ Example Console Output
 
-Place a screenshot of your console at `./assets/console.png` and include it here:
 
 ![Console Output](./assets/console.png)
 

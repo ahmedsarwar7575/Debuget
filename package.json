@@ -1,9 +1,10 @@
 {
   "name": "debuget",
-  "version": "1.0.5",
+  "version": "2.0.0",  
   "description": "A pocket-sized debugging dino that pecks away at every error and shows you exactly what went wrong and where—no more hunting through messy stack traces.",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "index.js",
     "src/",
@@ -12,7 +13,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node test/test.js"
+    "start": "tsc && node dist/enhancedErrorLogger.js"
   },
   "repository": {
     "type": "git",
@@ -40,5 +41,12 @@
     "chalk": "^5.0.0",
     "debuget": "^1.0.0",
     "stacktrace-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/boxen": "^3.0.5",
+    "@types/chalk": "^2.2.4",
+    "@types/node": "^22.15.3",
+    "@types/stacktrace-js": "^2.0.3",
+    "typescript": "^5.8.3"
   }
 }
